@@ -1,6 +1,6 @@
 # Shopee Order Tracker
 
-Ứng dụng web tra cứu đơn hàng Shopee với giao diện timeline đẹp mắt, được xây dựng bằng Next.js 14 và TypeScript.
+Ứng dụng web tra cứu đơn hàng Shopee với giao diện timeline đẹp mắt, được xây dựng bằng Next.js 14 và TypeScript.  11
 
 ## Tính năng
 
