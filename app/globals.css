@@ -1,0 +1,27 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+}
+
+@layer components {
+  .timeline-item {
+    @apply relative pl-8 pb-8 border-l-2 border-gray-200;
+  }
+  
+  .timeline-item:last-child {
+    @apply border-l-0;
+  }
+  
+  .timeline-dot {
+    @apply absolute -left-2 top-0 w-4 h-4 rounded-full bg-shopee-orange border-2 border-white shadow-lg;
+  }
+  
+  .timeline-content {
+    @apply bg-white rounded-lg shadow-sm border border-gray-100 p-4;
+  }
+}
