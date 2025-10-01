@@ -10,15 +10,16 @@ interface TrackingTimelineProps {
 export default function TrackingTimeline({ trackingInfo }: TrackingTimelineProps) {
   const formatTime = (timestamp: number) => {
     const date = new Date(timestamp * 1000);
-    return date.toLocaleString('vi-VN', {
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
-      hour: '2-digit',
-      minute: '2-digit',
-      second: '2-digit',
-    });
+    const day = date.getDate().toString().padStart(2, '0');
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const year = date.getFullYear();
+    const hour = date.getHours().toString().padStart(2, '0');
+    const minute = date.getMinutes().toString().padStart(2, '0');
+    const second = date.getSeconds().toString().padStart(2, '0');
+    
+    return `${day}/${month}/${year} ${hour}:${minute}:${second}`;
   };
+
 
   const getStatusIcon = (trackingCode: string, displayFlag: number, displayFlagV2: number) => {
     // Hiển thị icon dựa trên display_flag và display_flag_v2
@@ -51,25 +52,25 @@ export default function TrackingTimeline({ trackingInfo }: TrackingTimelineProps
     <div className="bg-white rounded-lg shadow-lg p-6">
       <div className="mb-6">
         <h2 className="text-xl font-bold text-gray-900 mb-2">Thông tin đơn hàng</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-          <div>
-            <span className="font-medium text-gray-600">Mã vận đơn:</span>
-            <span className="ml-2 text-gray-900">{trackingInfo.sls_tn}</span>
+        <div className="space-y-2 text-sm">
+          <div className="flex flex-col sm:flex-row sm:items-center">
+            <span className="font-medium text-gray-600 min-w-[120px]">Mã vận đơn:</span>
+            <span className="text-gray-900 break-all">{trackingInfo.sls_tn}</span>
           </div>
-          <div>
-            <span className="font-medium text-gray-600">Mã đơn hàng:</span>
-            <span className="ml-2 text-gray-900">{trackingInfo.client_order_id}</span>
+          <div className="flex flex-col sm:flex-row sm:items-center">
+            <span className="font-medium text-gray-600 min-w-[120px]">Mã đơn hàng:</span>
+            <span className="text-gray-900 break-all">{trackingInfo.client_order_id}</span>
           </div>
           {trackingInfo.receiver_name && (
-            <div>
-              <span className="font-medium text-gray-600">Người nhận:</span>
-              <span className="ml-2 text-gray-900">{trackingInfo.receiver_name}</span>
+            <div className="flex flex-col sm:flex-row sm:items-center">
+              <span className="font-medium text-gray-600 min-w-[120px]">Người nhận:</span>
+              <span className="text-gray-900 break-all">{trackingInfo.receiver_name}</span>
             </div>
           )}
           {trackingInfo.receiver_type_name && (
-            <div>
-              <span className="font-medium text-gray-600">Loại người nhận:</span>
-              <span className="ml-2 text-gray-900">{trackingInfo.receiver_type_name}</span>
+            <div className="flex flex-col sm:flex-row sm:items-center">
+              <span className="font-medium text-gray-600 min-w-[120px]">Loại người nhận:</span>
+              <span className="text-gray-900 break-all">{trackingInfo.receiver_type_name}</span>
             </div>
           )}
         </div>
@@ -90,41 +91,49 @@ export default function TrackingTimeline({ trackingInfo }: TrackingTimelineProps
             </div>
             
             <div className="timeline-content">
-              <div className="flex items-start justify-between mb-2">
-                <div className="flex-1">
-                  <h4 className={`font-semibold ${getStatusColor(record.display_flag, record.display_flag_v2)}`}>
-                    {record.tracking_name}
-                  </h4>
-                  <p className="text-sm text-gray-600 mt-1">
-                    {record.buyer_description || record.description}
-                  </p>
-                  
-                  {/* Hiển thị thông tin trạng thái */}
-                  <div className="mt-2 flex flex-wrap gap-2">
-                    <span className={`inline-block px-2 py-1 rounded text-xs ${
-                      record.display_flag === 1 
-                        ? 'bg-green-100 text-green-800' 
-                        : 'bg-gray-100 text-gray-600'
-                    }`}>
-                      Display Flag: {record.display_flag}
-                    </span>
-                    <span className={`inline-block px-2 py-1 rounded text-xs ${
-                      record.display_flag_v2 > 0 
-                        ? 'bg-blue-100 text-blue-800' 
-                        : 'bg-gray-100 text-gray-600'
-                    }`}>
-                      Display Flag V2: {record.display_flag_v2}
-                    </span>
-                    <span className="inline-block bg-gray-100 text-gray-600 px-2 py-1 rounded text-xs">
-                      Code: {record.tracking_code}
-                    </span>
-                  </div>
+              {/* Ngày tháng - hiển thị trên cùng */}
+              <div className="mb-2">
+                <div className="flex items-center gap-2 text-sm text-gray-500">
+                  <Clock className="w-4 h-4" />
+                  <span className="font-medium">{formatTime(record.actual_time)}</span>
                 </div>
-                <div className="text-right text-sm text-gray-500 ml-4">
-                  <div className="flex items-center gap-1">
-                    <Clock className="w-4 h-4" />
-                    {formatTime(record.actual_time)}
-                  </div>
+              </div>
+              
+              {/* Tiêu đề trạng thái */}
+              <div className="mb-2">
+                <h4 className={`font-semibold ${getStatusColor(record.display_flag, record.display_flag_v2)}`}>
+                  {record.tracking_name}
+                </h4>
+              </div>
+              
+              
+              {/* Mô tả */}
+              <div className="mb-2">
+                <p className="text-sm text-gray-600">
+                  {record.buyer_description || record.description}
+                </p>
+              </div>
+              
+              {/* Hiển thị thông tin trạng thái */}
+              <div className="mb-2">
+                <div className="flex flex-wrap gap-2">
+                  <span className={`inline-block px-2 py-1 rounded text-xs ${
+                    record.display_flag === 1 
+                      ? 'bg-green-100 text-green-800' 
+                      : 'bg-gray-100 text-gray-600'
+                  }`}>
+                    Display Flag: {record.display_flag}
+                  </span>
+                  <span className={`inline-block px-2 py-1 rounded text-xs ${
+                    record.display_flag_v2 > 0 
+                      ? 'bg-blue-100 text-blue-800' 
+                      : 'bg-gray-100 text-gray-600'
+                  }`}>
+                    Display Flag V2: {record.display_flag_v2}
+                  </span>
+                  <span className="inline-block bg-gray-100 text-gray-600 px-2 py-1 rounded text-xs">
+                    Code: {record.tracking_code}
+                  </span>
                 </div>
               </div>
 

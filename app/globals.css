@@ -21,6 +21,7 @@
     @apply absolute -left-2 top-0 w-4 h-4 rounded-full bg-shopee-orange border-2 border-white shadow-lg;
   }
   
+  
   .timeline-content {
     @apply bg-white rounded-lg shadow-sm border border-gray-100 p-4;
   }
